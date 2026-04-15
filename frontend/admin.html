@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexBank — Panel Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin-body">
+
+<!-- ═══════════════════════════════════════════════════════════
+     PANTALLA DE LOGIN DEL ADMIN (separada del login de usuarios)
+═══════════════════════════════════════════════════════════ -->
+<div id="admin-login-screen" class="admin-screen active">
+  <div class="admin-login-wrap">
+    <div class="admin-login-card">
+
+      <div class="brand">
+        <div class="brand-icon admin-icon">A</div>
+        <div>
+          <span class="brand-name">NexBank</span>
+          <span class="admin-badge">Admin</span>
+        </div>
+      </div>
+
+      <h2 class="admin-login-title">Panel de Administración</h2>
+      <p class="admin-login-sub">Solo para administradores del sistema.</p>
+
+      <form id="admin-login-form" novalidate>
+        <div class="field-group">
+          <label for="admin-email">Email</label>
+          <input id="admin-email" type="email" placeholder="admin@banco.com" autocomplete="email" />
+          <span class="field-error" id="admin-email-err"></span>
+        </div>
+        <div class="field-group">
+          <label for="admin-password">Contraseña</label>
+          <div class="password-wrap">
+            <input id="admin-password" type="password" placeholder="••••••••" autocomplete="current-password" />
+            <button type="button" class="eye-btn" data-target="admin-password">👁</button>
+          </div>
+          <span class="field-error" id="admin-password-err"></span>
+        </div>
+        <button type="submit" class="btn-primary admin-btn" id="admin-login-btn">
+          <span class="btn-text">Ingresar al panel</span>
+          <span class="btn-spinner hidden"></span>
+        </button>
+        <div id="admin-login-error" class="form-alert hidden"></div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PANEL PRINCIPAL DEL ADMIN
+═══════════════════════════════════════════════════════════ -->
+<div id="admin-panel-screen" class="admin-screen">
+
+  <!-- Barra superior -->
+  <header class="admin-topbar">
+    <div class="admin-topbar-left">
+      <div class="brand-icon admin-icon" style="width:30px;height:30px;font-size:14px;">A</div>
+      <span class="admin-topbar-title">NexBank Admin</span>
+    </div>
+    <div class="admin-topbar-right">
+      <span id="admin-greeting" class="admin-user-label"></span>
+      <button id="admin-logout-btn" class="admin-logout-btn">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="admin-layout">
+
+    <!-- Sidebar de navegación del admin -->
+    <nav class="admin-sidebar">
+      <ul class="admin-nav">
+        <li>
+          <a href="#" class="admin-nav-item active" data-section="overview">
+            <svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9M5 10v9h5v-5h4v5h5v-9"/></svg>
+            Vista general
+          </a>
+        </li>
+        <li>
+          <a href="#" class="admin-nav-item" data-section="transactions">
+            <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+            Transacciones
+          </a>
+        </li>
+        <li>
+          <a href="#" class="admin-nav-item" data-section="users">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Usuarios
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="admin-main">
+
+      <!-- ── Sección: Vista general ── -->
+      <section id="section-overview" class="admin-section active">
+        <h1 class="admin-section-title">Vista General</h1>
+
+        <!-- Tarjetas de estadísticas -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <p class="stat-label">Total de usuarios</p>
+            <p class="stat-value" id="stat-users">—</p>
+          </div>
+          <div class="stat-card">
+            <p class="stat-label">Total de transacciones</p>
+            <p class="stat-value" id="stat-transactions">—</p>
+          </div>
+          <div class="stat-card accent">
+            <p class="stat-label">Volumen total transferido</p>
+            <p class="stat-value" id="stat-volume">—</p>
+          </div>
+        </div>
+
+        <!-- Últimas 10 transacciones en el overview -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3>Transacciones recientes</h3>
+            <a href="#" class="view-all-link" data-section="transactions">Ver todas</a>
+          </div>
+          <div id="overview-tx-list" class="admin-table-wrap">
+            <div class="tx-skeleton"></div>
+            <div class="tx-skeleton"></div>
+            <div class="tx-skeleton"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Sección: Todas las transacciones ── -->
+      <section id="section-transactions" class="admin-section">
+        <h1 class="admin-section-title">Todas las Transacciones</h1>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <input
+              id="tx-search-admin"
+              type="search"
+              class="admin-search"
+              placeholder="Buscar por descripción..."
+            />
+            <span id="tx-count-label" class="count-label"></span>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table" id="tx-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Remitente</th>
+                  <th>Destinatario</th>
+                  <th>Descripción</th>
+                  <th>Monto</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="tx-tbody">
+                <tr><td colspan="6" class="table-loading">Cargando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination" id="tx-pagination"></div>
+        </div>
+      </section>
+
+      <!-- ── Sección: Usuarios ── -->
+      <section id="section-users" class="admin-section">
+        <h1 class="admin-section-title">Usuarios Registrados</h1>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <input
+              id="users-search-admin"
+              type="search"
+              class="admin-search"
+              placeholder="Buscar por nombre o email..."
+            />
+            <span id="users-count-label" class="count-label"></span>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table" id="users-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Nro. Cuenta</th>
+                  <th>Saldo</th>
+                  <th>Admin</th>
+                  <th>Registrado</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody">
+                <tr><td colspan="6" class="table-loading">Cargando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination" id="users-pagination"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- Toast container (lo reutilizamos del CSS principal) -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- Scripts -->
+<script src="js/config.js"></script>
+<script src="js/admin.js"></script>
+
+</body>
+</html>

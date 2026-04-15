@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexBank — Banking Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     AUTH SCREEN  (login / register)
+═══════════════════════════════════════════════════════════════ -->
+<div id="auth-screen" class="screen active">
+  <div class="auth-bg">
+    <div class="auth-card">
+
+      <!-- Logo -->
+      <div class="brand">
+        <div class="brand-icon">N</div>
+        <span class="brand-name">NexBank</span>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="tab-btn active" data-tab="login">Sign In</button>
+        <button class="tab-btn" data-tab="register">Create Account</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form active" novalidate>
+        <div class="field-group">
+          <label for="login-email">Email</label>
+          <input id="login-email" type="email" placeholder="you@example.com" autocomplete="email" />
+          <span class="field-error" id="login-email-err"></span>
+        </div>
+        <div class="field-group">
+          <label for="login-password">Password</label>
+          <div class="password-wrap">
+            <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password" />
+            <button type="button" class="eye-btn" data-target="login-password">👁</button>
+          </div>
+          <span class="field-error" id="login-password-err"></span>
+        </div>
+        <button type="submit" class="btn-primary" id="login-btn">
+          <span class="btn-text">Sign In</span>
+          <span class="btn-spinner hidden"></span>
+        </button>
+        <div id="login-error" class="form-alert hidden"></div>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="auth-form" novalidate>
+        <div class="field-group">
+          <label for="reg-name">Full Name</label>
+          <input id="reg-name" type="text" placeholder="Jane Doe" autocomplete="name" />
+          <span class="field-error" id="reg-name-err"></span>
+        </div>
+        <div class="field-group">
+          <label for="reg-email">Email</label>
+          <input id="reg-email" type="email" placeholder="you@example.com" autocomplete="email" />
+          <span class="field-error" id="reg-email-err"></span>
+        </div>
+        <div class="field-group">
+          <label for="reg-password">Password</label>
+          <div class="password-wrap">
+            <input id="reg-password" type="password" placeholder="Min 8 chars, 1 uppercase, 1 number" autocomplete="new-password" />
+            <button type="button" class="eye-btn" data-target="reg-password">👁</button>
+          </div>
+          <span class="field-error" id="reg-password-err"></span>
+          <div class="password-strength">
+            <div class="strength-bar" id="strength-bar"></div>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary" id="register-btn">
+          <span class="btn-text">Create Account</span>
+          <span class="btn-spinner hidden"></span>
+        </button>
+        <div id="register-error" class="form-alert hidden"></div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     DASHBOARD SCREEN
+═══════════════════════════════════════════════════════════════ -->
+<div id="dashboard-screen" class="screen">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">N</div>
+      <span>NexBank</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#" class="nav-item active" data-view="overview">
+        <svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9M5 10v9h5v-5h4v5h5v-9"/></svg>
+        Overview
+      </a></li>
+      <li><a href="#" class="nav-item" data-view="transfer">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Transfer
+      </a></li>
+      <li><a href="#" class="nav-item" data-view="history">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        History
+      </a></li>
+    </ul>
+    <button id="logout-btn" class="sidebar-logout">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      Sign Out
+    </button>
+  </nav>
+
+  <!-- Main content area -->
+  <main class="main-content">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <button class="menu-toggle" id="menu-toggle">&#9776;</button>
+      <div class="topbar-greeting">
+        Good <span id="greeting-time"></span>, <strong id="greeting-name"></strong>
+      </div>
+      <div class="topbar-account">
+        <span id="topbar-account-num" class="account-badge"></span>
+      </div>
+    </header>
+
+    <!-- ── View: Overview ── -->
+    <section id="view-overview" class="view active">
+      <div class="balance-card">
+        <p class="balance-label">Available Balance</p>
+        <h1 class="balance-amount" id="balance-display">$0.00</h1>
+        <p class="balance-account" id="balance-account"></p>
+        <div class="balance-actions">
+          <button class="btn-action" data-view="transfer">Send Money</button>
+          <button class="btn-action secondary" data-view="history">View History</button>
+        </div>
+      </div>
+
+      <div class="recent-header">
+        <h3>Recent Activity</h3>
+        <a href="#" class="view-all-link" data-view="history">View all</a>
+      </div>
+      <div id="recent-transactions" class="tx-list">
+        <div class="tx-skeleton"></div>
+        <div class="tx-skeleton"></div>
+        <div class="tx-skeleton"></div>
+      </div>
+    </section>
+
+    <!-- ── View: Transfer ── -->
+    <section id="view-transfer" class="view">
+      <h2 class="view-title">Send Money</h2>
+
+      <div class="transfer-card">
+
+        <!-- Step 1: Recipient lookup -->
+        <div id="step-recipient" class="transfer-step active">
+          <h3>Who are you sending to?</h3>
+          <div class="field-group">
+            <label for="transfer-recipient">Email or Account Number</label>
+            <div class="lookup-wrap">
+              <input id="transfer-recipient" type="text" placeholder="jane@example.com or ACC-12345678" />
+              <button class="btn-lookup" id="lookup-btn">
+                <span class="btn-text">Find</span>
+                <span class="btn-spinner hidden"></span>
+              </button>
+            </div>
+            <span class="field-error" id="recipient-err"></span>
+          </div>
+          <div id="recipient-preview" class="recipient-preview hidden">
+            <div class="recipient-avatar" id="rec-avatar"></div>
+            <div>
+              <p class="rec-name" id="rec-name"></p>
+              <p class="rec-account" id="rec-account-num"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Amount + description -->
+        <div id="step-amount" class="transfer-step">
+          <h3>How much?</h3>
+          <div class="field-group amount-field">
+            <span class="currency-symbol">$</span>
+            <input id="transfer-amount" type="number" min="0.01" step="0.01" placeholder="0.00" />
+          </div>
+          <span class="field-error" id="amount-err"></span>
+          <div class="field-group">
+            <label for="transfer-desc">Note <span class="optional">(optional)</span></label>
+            <input id="transfer-desc" type="text" maxlength="200" placeholder="e.g. Rent, Lunch, etc." />
+          </div>
+          <button class="btn-primary" id="review-btn">Review Transfer</button>
+        </div>
+
+        <!-- Step 3: Confirmation modal trigger -->
+        <div id="step-confirm" class="transfer-step">
+          <div class="confirm-summary">
+            <div class="confirm-row"><span>To</span><strong id="conf-name"></strong></div>
+            <div class="confirm-row"><span>Amount</span><strong id="conf-amount" class="conf-amount-val"></strong></div>
+            <div class="confirm-row"><span>Note</span><strong id="conf-desc"></strong></div>
+            <div class="confirm-row balance-row">
+              <span>Balance after</span><strong id="conf-balance-after"></strong>
+            </div>
+          </div>
+          <div class="confirm-actions">
+            <button class="btn-secondary" id="edit-transfer-btn">Edit</button>
+            <button class="btn-primary" id="send-btn">
+              <span class="btn-text">Confirm & Send</span>
+              <span class="btn-spinner hidden"></span>
+            </button>
+          </div>
+          <div id="transfer-error" class="form-alert hidden"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── View: History ── -->
+    <section id="view-history" class="view">
+      <h2 class="view-title">Transaction History</h2>
+      <div class="history-controls">
+        <input id="tx-search" type="search" placeholder="Search transactions…" />
+      </div>
+      <div id="history-list" class="tx-list">
+        <div class="tx-skeleton"></div>
+        <div class="tx-skeleton"></div>
+        <div class="tx-skeleton"></div>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SUCCESS OVERLAY
+═══════════════════════════════════════════════════════════════ -->
+<div id="success-overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="success-icon">
+      <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" fill="none"/><path fill="none" d="M14 26l8 8 16-16" class="checkmark"/></svg>
+    </div>
+    <h2 id="success-title">Transfer Sent!</h2>
+    <p id="success-message"></p>
+    <button class="btn-primary" id="success-close">Done</button>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- JS modules -->
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

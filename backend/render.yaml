@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: nexbank-api
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      # Set SUPABASE_URL, SUPABASE_SERVICE_KEY, JWT_SECRET via the Render dashboard
